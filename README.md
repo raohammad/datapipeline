@@ -28,3 +28,5 @@ NNs that needs to be added to enhance functions of the framework need to extend 
 
 `predict` preprocessed data is then passed on to this method where the NN model is invoked with processed data
 
+# data types
+Base class for all data that are passed to `nn.x` is `common.nndata.NNDataBase`. Any new NN added may reuse existing data class or may have to add a new data type of its own. Any new data class type should be subclass of `NNDataBase`
