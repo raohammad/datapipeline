@@ -8,14 +8,14 @@ Source adapters can be added to support data ingestion from multipe sources. Eac
 
 `delegate` function accepts callback function that is passed from NN class derived from `nn.Base`
 
-`SourceTemplate` class is a sample implementation that dumps data received on screen
+`SourceTemplate` class is a sample implementation that is based on hardcoded data for simple comprehension of design
 
 # target
 Source adapters can be added to support data ingestion from multipe sources. Each source adapter needs to be extended from target.Base class and implement three functions, `dumpData(..)` function
 
 `dumpData` function accepts data that needs to be saved/forwarded as a result of prediction on `nn.Base`
 
-`TargetTemplate` class is a sample implementation that dumps data received on screen
+`TargetTemplate` class is a sample implementation that dumps data received on screen for simple comprehension of design
 
 # nn
 NNs that needs to be added to enhance functions of the framework need to extend from base class `nn.Base`. Every NN consequently implements four abstract methods;
