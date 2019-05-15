@@ -8,7 +8,7 @@ __maintainer__ = "Hammad"
 __email__ = "raohammad@gmail.com"
 __status__ = "NA"
 
-# Driver Program, essentially below code is part of application that invikes the pipeline #
+# Driver Program, essentially below code is part of application that invokes the pipeline #
 from source.sourcetemplate import SourceTemplate
 from target.targettemplate import TargetTemplate
 from source.kafkasource import KafkaSource
@@ -63,3 +63,5 @@ nnResNet50v2 = NNResNet50v2(nnResNet50v2Args)
 nnResNet50v2.execute(KafkaSource(kafkaSourceArgs), KafkaTarget(kafkaTargetArgs))
 
 del nnResNet50v2
+
+# END Section: Based on Kafka Source and Target or KafkaSource and TargetTemplate
