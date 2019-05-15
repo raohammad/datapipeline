@@ -18,6 +18,8 @@ from mxnet.gluon.data.vision import transforms
 from mxnet.contrib.onnx.onnx2mx.import_model import import_model
 import os
 import json
+import cv2
+import base64
 
 class NNResNet50v2(NNBase):
 
@@ -67,7 +69,8 @@ class NNResNet50v2(NNBase):
         return img
 
     def predict(self, img):
-        img = preprocess(img)
+        img = self.get_image(img)
+        img = self.preprocess(img)
         self.mod.forward(self.Batch([img]))
         # Take softmax to generate probabilities
         scores = mx.ndarray.softmax(self.mod.get_outputs()[0]).asnumpy()
@@ -80,10 +83,10 @@ class NNResNet50v2(NNBase):
     def callback(self, nnImageData):
         print('callback of NNTemplate called with args:')
         requestId, data, args = nnImageData.nnData()
-        jsondata = json.loads(data)
+        jsondata = json.loads(data.decode("utf-8"))
         print(jsondata['requestId'])
-        print(jsondata['img'])
-        result = predict(jsondata['img'])
+        #jsondata['img'] #please note this is in base64 format, it needs to be converted back to image
+        result = self.predict(base64.b64decode(jsondata['img']))
         #print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
         self.targetBase.dumpData(nnImageData)
         return super().callback(nnImageData)
