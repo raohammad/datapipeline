@@ -1,7 +1,7 @@
 # nndatapipeline
 NN Data Pipeline for Inferencing on Neural Networks (onnx fundamentally). 
 
-The NN is connected to source and target that implement abstrat functions of source.Base and target.Base classes respectively. New NNs can be added that need to be inherited from nn.Base class and consequently implementing all abstract functions. This repository is a part of larger implementation but is a cohesive module in itself. Its made opensource for community contribution to add as many source and targets as possible so that NN pipelines can be built with as many adapters support as possible.
+Designed roughly on pipeline design pattern. The NN is connected to source and target that implement abstrat functions of source.Base and target.Base classes respectively. New NNs can be added that need to be inherited from nn.Base class and consequently implementing all abstract functions. This repository is a part of larger implementation but is a cohesive module in itself. Its made opensource for community contribution to add as many source and targets as possible so that NN pipelines can be built with as many adapters support as possible.
 
 # source
 Source adapters can be added to support data ingestion from multipe sources. Each source adapter needs to be extended from source.Base class and implements, `delegate(..)` function
