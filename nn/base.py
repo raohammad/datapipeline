@@ -34,8 +34,8 @@ class NNBase(metaclass=abc.ABCMeta):
         """
 
     @abc.abstractmethod
-    def callback(self, args):
-        """Save the data object to the output."""
+    def callback(self, nnDataBase):
+        """Save the data object to the output. Always accept a subclass of common.nndata.NNDataBase"""
 
     @abc.abstractmethod
     def __del__(self):

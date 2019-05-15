@@ -13,22 +13,28 @@ import time
 from target.base import TargetBase
 from common.args import Args
 from common.nndata import NNImageData
+from kafka import KafkaProducer
+from kafka.errors import KafkaError
 
-class TargetTemplate(TargetBase):
+class KafkaTarget(TargetBase):
     def __init__(self, args):
-        self.name = 'target.TargetTemplate'
+        self.name = 'target.KafkaTarget'
         self.ip = args.ip
         self.port = args.port
-        self.user = args.user
-        self.password = args.password
-        print('TargetTemplate initializer called')
+        self.topicout = args.topicout
+        self.producer = KafkaProducer(bootstrap_servers=[self.ip+':'+self.port])
+        self.future = self.producer.send(self.ip, b'row_bytes')
+        print('KafkaTarget initializer called')
 
     #function dumpData will have to handle data depending on data type i.e. subsclasses of NNDataBase
     def dumpData(self, nnDataBase):
-        print('dumping received data to screen')
         if isinstance(nnDataBase, NNImageData):
-            requestId, data, args = nnDataBase.nnData()
-            print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
+            print('dumping received data to kafka output topic:'+self.topicout)
+            responseId, data, args = nnDataBase.nnData()
+            print('requestId:'+responseId if responseId is not None else 'None'+' data:'+data.decode("utf-8"))
+            self.producer.send(self.topicout, 
+                key=b'(responseId if responseId is not None else "None")', 
+                value=bytes(data.decode('utf-8'), 'utf-8'))
         #if isinstance(someOtherInstance, SomeOtherClass):...
         else:
             print('data received at '+self.name+' is of unidentified format')
@@ -36,5 +42,6 @@ class TargetTemplate(TargetBase):
         #for example for kafka, it shall trigger the producter and for DB it would be direct DB storage
         
     def __del__(self):
-        print('TargetTemplate destructor called')
+        print('KafkaTarget destructor called')
+        self.producer.close()
         return super().__del__()

@@ -17,9 +17,9 @@ class TargetBase(metaclass=abc.ABCMeta):
         print('TargetBase initializer called.') 
   
     @abc.abstractmethod
-    def dumpData(self, args):
+    def dumpData(self, nnDataBase):
         """receives data in this dumpData function. Every target will handle dumped data in its own way
-        whenever data is received
+        whenever data is received. Inherited class must be segregated depending on subclass of NNDataBase base class
         """
 
     @abc.abstractmethod
