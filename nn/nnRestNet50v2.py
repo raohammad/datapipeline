@@ -34,6 +34,7 @@ class NNResNet50v2(NNBase):
         else:
             ctx = mx.gpu(0)
         self.Batch = namedtuple('Batch', ['data'])
+        self.img_path = 'nn/onnx/file.jpg'
         self.mod = mx.mod.Module(symbol=sym, context=ctx, label_names=None)
         self.mod.bind(for_training=False, data_shapes=[('data', (1,3,224,224))], 
                 label_shapes=self.mod._label_shapes)
@@ -48,13 +49,11 @@ class NNResNet50v2(NNBase):
         self.targetBase = targetBase
         self.sourceBase.delegate(self.args, self.callback)
 
-    def get_image(sourceimage, show=False):
-        img = mx.img.imdecode(sourceimage)
+    def get_image(img_path, show=False):
+        img_path = 'nn/onnx/file.jpg'
+        img = mx.image.imread(img_path)
         if img is None:
             return None
-        if show:
-            plt.imshow(img.asnumpy())
-            plt.axis('off')
         return img
 
     def preprocess(self, img):
@@ -68,27 +67,36 @@ class NNResNet50v2(NNBase):
         img = img.expand_dims(axis=0)
         return img
 
-    def predict(self, img):
-        img = self.get_image(img)
-        img = self.preprocess(img)
+    def predict(self, img_path):
+        imgr = self.get_image(img_path)
+        img = self.preprocess(imgr)
         self.mod.forward(self.Batch([img]))
         # Take softmax to generate probabilities
         scores = mx.ndarray.softmax(self.mod.get_outputs()[0]).asnumpy()
         # print the top-5 inferences class
         scores = np.squeeze(scores)
         a = np.argsort(scores)[::-1]
+        jsonout = {}
+        jsonout['classes'] = []
         for i in a[0:5]:
             print('class=%s ; probability=%f' %(self.labels[i],scores[i]))
+            jsonout['classes'].append({'class':self.labels[i], 'probability':scores[i]})
+        return jsonout
 
     def callback(self, nnImageData):
         print('callback of NNTemplate called with args:')
         requestId, data, args = nnImageData.nnData()
         jsondata = json.loads(data.decode("utf-8"))
         print(jsondata['requestId'])
-        #jsondata['img'] #please note this is in base64 format, it needs to be converted back to image
-        result = self.predict(base64.b64decode(jsondata['img']))
-        #print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
-        self.targetBase.dumpData(nnImageData)
+        if jsondata['img'] is not None:
+            filedata = base64.b64decode(jsondata['img'])
+            with open(self.img_path, 'wb') as f_output:
+                f_output.write(filedata)
+            jsondata['img'] #please note this is in base64 format, it needs to be converted back to image
+            result = self.predict(self.img_path)
+            #print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
+            nnImageData.args.result = result;
+            self.targetBase.dumpData(nnImageData)
         return super().callback(nnImageData)
 
     def __del__(self):
