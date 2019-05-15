@@ -4,14 +4,14 @@ NN Data Pipeline for Inferencing on Neural Networks (onnx fundamentally).
 The NN is connected to source and target that implement abstrat functions of source.Base and target.Base classes respectively. New NNs can be added that need to be inherited from nn.Base class and consequently implementing all abstract functions. This repository is a part of larger implementation but is a cohesive module in itself. Its made opensource for community contribution to add as many source and targets as possible so that NN pipelines can be built with as many adapters support as possible.
 
 # source
-Source adapters can be added to support data ingestion from multipe sources. Each source adapter needs to be extended from source.Base class and implement three functions, `delegate(..)`, `init` and `del`.
+Source adapters can be added to support data ingestion from multipe sources. Each source adapter needs to be extended from source.Base class and implements, `delegate(..)` function
 
 `delegate` function accepts callback function that is passed from NN class derived from `nn.Base`
 
 `SourceTemplate` class is a sample implementation that dumps data received on screen
 
 # target
-Source adapters can be added to support data ingestion from multipe sources. Each source adapter needs to be extended from source.Base class and implement three functions, `delegate(..)`, `init` and `del`.
+Source adapters can be added to support data ingestion from multipe sources. Each source adapter needs to be extended from target.Base class and implement three functions, `dumpData(..)` function
 
 `dumpData` function accepts data that needs to be saved/forwarded as a result of prediction on `nn.Base`
 
