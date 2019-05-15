@@ -95,7 +95,7 @@ class NNResNet50v2(NNBase):
             jsondata['img'] #please note this is in base64 format, it needs to be converted back to image
             result = self.predict(self.img_path)
             #print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
-            nnImageData.args.result = result;
+            nnImageData.args.result = json.dumps(result);
             self.targetBase.dumpData(nnImageData)
         return super().callback(nnImageData)
 
