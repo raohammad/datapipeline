@@ -34,7 +34,7 @@ class KafkaTarget(TargetBase):
             print('requestId:'+responseId if responseId is not None else 'None'+' data:'+data.decode("utf-8"))
             self.producer.send(self.topicout, 
                 key=b'(responseId if responseId is not None else "None")', 
-                value=bytes(args.result.decode('utf-8'), 'utf-8'))
+                value=bytes(args.result, 'utf-8'))
         #if isinstance(someOtherInstance, SomeOtherClass):...
         else:
             print('data received at '+self.name+' is of unidentified format')
