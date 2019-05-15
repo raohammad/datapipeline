@@ -80,7 +80,7 @@ class NNResNet50v2(NNBase):
         jsonout['classes'] = []
         for i in a[0:5]:
             print('class=%s ; probability=%f' %(self.labels[i],scores[i]))
-            jsonout['classes'].append({'class':self.labels[i], 'probability':scores[i]})
+            jsonout['classes'].append({'class':self.labels[i], 'probability':str(scores[i])})
         return jsonout
 
     def callback(self, nnImageData):
