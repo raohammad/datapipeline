@@ -31,7 +31,7 @@ class KafkaTarget(TargetBase):
         if isinstance(nnDataBase, NNImageData):
             print('dumping received data to kafka output topic:'+self.topicout)
             responseId, data, args = nnDataBase.nnData()
-            print('requestId:'+responseId if responseId is not None else 'None'+' data:'+data.decode("utf-8"))
+            #print('requestId:'+responseId if responseId is not None else 'None'+' data:'+data.decode("utf-8"))
             self.producer.send(self.topicout, 
                 key=b'(responseId if responseId is not None else "None")', 
                 value=bytes(args.result, 'utf-8'))
