@@ -24,14 +24,18 @@ class NNResNet50v2(NNBase):
         self.args = args
         print('NNResNet50v2 initializer called')
         print('NNResNet50v2 model being loaded')
-        model_path= 'onnx/resnet50v2.onnx'
+        model_path= 'nn/onnx/resnet50v2.onnx'
         sym, arg_params, aux_params = import_model(model_path)
+        if len(mx.test_utils.list_gpus())==0:
+            ctx = mx.cpu()
+        else:
+            ctx = mx.gpu(0)
         self.Batch = namedtuple('Batch', ['data'])
         self.mod = mx.mod.Module(symbol=sym, context=ctx, label_names=None)
         self.mod.bind(for_training=False, data_shapes=[('data', (1,3,224,224))], 
                 label_shapes=mod._label_shapes)
         self.mod.set_params(arg_params, aux_params, allow_missing=True, allow_extra=True)
-        with open('onnx/synset.txt', 'r') as f:
+        with open('nn/onnx/synset.txt', 'r') as f:
             self.labels = [l.rstrip() for l in f]
         print('NNResNet50v2 model loading done')
         print('NNTemplate initializer called')
