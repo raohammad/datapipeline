@@ -17,6 +17,7 @@ from collections import namedtuple
 from mxnet.gluon.data.vision import transforms
 from mxnet.contrib.onnx.onnx2mx.import_model import import_model
 import os
+import json
 
 class NNResNet50v2(NNBase):
 
@@ -33,7 +34,7 @@ class NNResNet50v2(NNBase):
         self.Batch = namedtuple('Batch', ['data'])
         self.mod = mx.mod.Module(symbol=sym, context=ctx, label_names=None)
         self.mod.bind(for_training=False, data_shapes=[('data', (1,3,224,224))], 
-                label_shapes=mod._label_shapes)
+                label_shapes=self.mod._label_shapes)
         self.mod.set_params(arg_params, aux_params, allow_missing=True, allow_extra=True)
         with open('nn/onnx/synset.txt', 'r') as f:
             self.labels = [l.rstrip() for l in f]
@@ -79,7 +80,10 @@ class NNResNet50v2(NNBase):
     def callback(self, nnImageData):
         print('callback of NNTemplate called with args:')
         requestId, data, args = nnImageData.nnData()
-        result = predict(data['image'])
+        jsondata = json.loads(data)
+        print(jsondata['requestId'])
+        print(jsondata['img'])
+        result = predict(jsondata['img'])
         #print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
         self.targetBase.dumpData(nnImageData)
         return super().callback(nnImageData)
