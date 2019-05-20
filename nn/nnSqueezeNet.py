@@ -21,7 +21,7 @@ import json
 import cv2
 import base64
 
-class NNResNet50v2(NNBase):
+class NNSqueezeNet(NNBase):
 
     def __init__(self, args):
         self.args = args
@@ -43,11 +43,6 @@ class NNResNet50v2(NNBase):
             self.labels = [l.rstrip() for l in f]
         print('NNResNet50v2 model loading done')
         print('NNTemplate initializer called')
-    
-    def execute(self, sourceBase, targetBase):
-        self.sourceBase = sourceBase
-        self.targetBase = targetBase
-        self.sourceBase.delegate(self.args, self.callback)
 
     def get_image(img_path, show=False):
         img_path = 'nn/onnx/file.jpg'
@@ -96,7 +91,8 @@ class NNResNet50v2(NNBase):
             result = self.predict(self.img_path)
             #print('requestId:'+requestId if requestId is not None else 'None'+' data:'+data.decode("utf-8"))
             nnImageData.args.result = json.dumps(result);
-            self.targetBase.dumpData(nnImageData)
+            for t in self.targetBase:
+                t.dumpData(args)
         return super().callback(nnImageData)
 
     def __del__(self):

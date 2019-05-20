@@ -16,11 +16,6 @@ class NNTemplate(NNBase):
     def __init__(self, args):
         self.args = args
         print('NNTemplate initializer called')
-    
-    def execute(self, sourceBase, targetBase):
-        self.sourceBase = sourceBase
-        self.targetBase = targetBase
-        self.sourceBase.delegate(self.args, self.callback)
 
     def preprocess(self, args):
         return super().preprocess(args)
@@ -33,7 +28,8 @@ class NNTemplate(NNBase):
         print('callback of NNTemplate called with args:')
         args.result = self.predict(self.args)
         print(args)
-        self.targetBase.dumpData(args)
+        for t in self.targetBase:
+            t.dumpData(args)
         return super().callback(args)
 
     def __del__(self):

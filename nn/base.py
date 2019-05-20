@@ -16,11 +16,12 @@ class NNBase(metaclass=abc.ABCMeta):
     def __init__(self, args): 
         """load the relevant ONNX model
         """
-    @abc.abstractmethod
-    def execute(self, args):
-        """ every NN's entry point. args.SourceBase and args.TargetBase are passed. Always SourceBase.deletate function will take the callback method 
-        of this class
-        """
+    #receives source list and  target list
+    def execute(self, sourceBase, targetBase):
+        self.sourceBase = sourceBase
+        self.targetBase = targetBase
+        for s in self.sourceBase:
+            s.delegate(self.args, self.callback)
 
     @abc.abstractmethod
     def preprocess(self, args):
